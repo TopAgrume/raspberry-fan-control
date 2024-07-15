@@ -1,0 +1,16 @@
+[Unit]
+Description=Raspberry Pi PWM Fan Control
+After=docker.service
+Wants=docker.service
+
+[Service]
+Restart=on-failure
+RestartSec=10s
+ExecStartPre=-/usr/bin/docker stop raspberryfan-control
+ExecStartPre=-/usr/bin/docker rm raspberryfan-control
+ExecStart=/usr/bin/docker run --name=raspberryfan-control --privileged fan-control
+ExecStop=-/usr/bin/docker stop -t 2 raspberryfan-control
+ExecStopPost=-/usr/bin/docker rm raspberryfan-control
+
+[Install]
+WantedBy=multi-user.target
